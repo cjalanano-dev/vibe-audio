@@ -1,7 +1,18 @@
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  color: white;
+  --primary: #ffffff;
+  --secondary: rgba(255, 255, 255, 0.6);
+  --accent: #646cff;
+}
+
 .app-container {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   position: relative;
+  background: #000;
+  overflow: hidden;
 }
 
 .ui-overlay {
@@ -14,78 +25,159 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 3rem;
+  padding: 40px;
   box-sizing: border-box;
-  background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), transparent 80%, rgba(0, 0, 0, 0.5));
 }
 
 .header {
-  text-align: center;
   pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .header h1 {
-  margin: 0;
-  font-size: 4rem;
+  font-size: 2rem;
   font-weight: 800;
-  letter-spacing: -3px;
-  background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 20px rgba(165, 180, 252, 0.3));
+  margin: 0;
+  letter-spacing: -0.05em;
+  color: var(--primary);
 }
 
 .header p {
-  margin-top: 0.5rem;
-  opacity: 0.7;
-  font-size: 1rem;
-  letter-spacing: 4px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--secondary);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #e0e7ff;
 }
 
-.controls-container {
+.controls-center {
+  pointer-events: auto;
+  align-self: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Start Menu */
+.start-menu {
+  display: flex;
+  gap: 20px;
+}
+
+.primary-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--primary);
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.primary-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.primary-btn .icon {
+  font-size: 1.2rem;
+}
+
+/* Active Controls (the island) */
+.active-controls {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  pointer-events: auto;
+  gap: 24px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  padding: 32px 48px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.source-controls {
+.control-group {
   display: flex;
-  gap: 1rem;
+  gap: 24px;
 }
 
-.btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.8rem 1.5rem;
+.circle-btn {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
   color: white;
-  font-size: 0.9rem;
-  border-radius: 12px;
+  font-size: 1.5rem;
   cursor: pointer;
-  backdrop-filter: blur(10px);
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 1px;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
 
-.btn:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+.circle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
 }
 
-.btn.active {
-  background: #6366f1;
-  /* Indigo-500 */
-  border-color: #818cf8;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+.circle-btn.stop-btn {
+  background: rgba(255, 59, 48, 0.2);
+  color: #ff3b30;
+}
+
+.circle-btn.stop-btn:hover {
+  background: rgba(255, 59, 48, 0.4);
+}
+
+.volume-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.icon-small {
+  font-size: 0.9rem;
+  opacity: 0.5;
+}
+
+.volume-slider {
+  -webkit-appearance: none;
+  width: 150px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.5);
+}
+
+.footer {
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--secondary);
 }
 
 .file-input-wrapper {
@@ -101,87 +193,4 @@
   width: 100%;
   height: 100%;
   cursor: pointer;
-}
-
-/* Playback Controls */
-.playback-controls {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 1rem 2rem;
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  animation: slideUp 0.5s ease;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.icon-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  width: 3rem;
-  height: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.2s;
-}
-
-.icon-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: scale(1.1);
-}
-
-.volume-control {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-input[type=range] {
-  -webkit-appearance: none;
-  width: 100px;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-  outline: none;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #6366f1;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.8);
-  transition: transform 0.1s;
-}
-
-input[type=range]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-}
-
-.footer {
-  text-align: center;
-  opacity: 0.4;
-  font-size: 0.8rem;
-  pointer-events: auto;
 }

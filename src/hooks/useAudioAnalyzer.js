@@ -10,6 +10,7 @@ export const useAudioAnalyzer = () => {
   const gainNode = useRef(null);
   const dataArray = useRef(null);
   const source = useRef(null);
+  const mediaStream = useRef(null);
 
   const initAudio = useCallback(() => {
     if (!audioContext.current) {
@@ -20,8 +21,6 @@ export const useAudioAnalyzer = () => {
       gainNode.current = audioContext.current.createGain();
       gainNode.current.gain.value = volume;
 
-      // Connect Gain -> Analyser -> Destination(Speakers)
-      // When connecting source, we connect Source -> Gain
       gainNode.current.connect(analyser.current);
       analyser.current.connect(audioContext.current.destination);
 
@@ -56,31 +55,29 @@ export const useAudioAnalyzer = () => {
     }
   };
 
+  const disconnectAudio = () => {
+    if (mediaStream.current) {
+      mediaStream.current.getTracks().forEach(track => track.stop());
+      mediaStream.current = null;
+    }
+    if (source.current) {
+      try { source.current.stop(); } catch (e) { }
+      source.current.disconnect();
+      source.current = null;
+    }
+    setIsPlaying(false);
+  };
+
   const connectMicrophone = async () => {
+    disconnectAudio();
     initAudio();
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-      if (source.current) {
-        source.current.disconnect();
-        // Note: Disconnecting mic source might need stream track stopping to fully release,
-        // but for switching sources this is usually enough logic for AudioNodes.
-      }
+      mediaStream.current = stream;
+
       source.current = audioContext.current.createMediaStreamSource(stream);
-      // Mic -> Gain -> Analyser -> Speaker
-      // Warning: Mic to Speaker triggers feedback loop. 
-      // So for Mic, usually we DON'T want to connect to destination if we are in same room.
-
-      // Let's disconnect analyser from destination for Mic to avoid feedback
       analyser.current.disconnect();
-      // But we need to keep the graph alive. 
-      // Usually Mic -> Analyser. 
       source.current.connect(gainNode.current);
-
-      // Reconnect Gain -> Analyser
-      // But DO NOT connect Analyser -> Destination for Mic.
-      // We handle this via a flag or just by logic?
-      // For simplicity, let's mute the gainNode for the "playback" part or disconnect destination
-      // The Visualizer needs data from Analyser.
     } catch (err) {
       console.error('Error accessing microphone:', err);
       alert('Microphone access denied or not available.');
@@ -89,22 +86,16 @@ export const useAudioAnalyzer = () => {
   };
 
   const connectFile = (file) => {
+    disconnectAudio();
     initAudio();
     const reader = new FileReader();
     reader.onload = function (e) {
       const arrayBuffer = e.target.result;
       audioContext.current.decodeAudioData(arrayBuffer, function (buffer) {
-        if (source.current) {
-          try { source.current.stop(); } catch (e) { }
-          source.current.disconnect();
-        }
-
         source.current = audioContext.current.createBufferSource();
         source.current.buffer = buffer;
         source.current.loop = true;
 
-        // File -> Gain -> Analyser -> Destination (We want to hear the file)
-        // Ensure Analyser is connected to destination (it might have been disconnected by Mic logic)
         try {
           analyser.current.connect(audioContext.current.destination);
         } catch (e) { /* already connected */ }
@@ -139,6 +130,7 @@ export const useAudioAnalyzer = () => {
   return {
     connectMicrophone,
     connectFile,
+    disconnectAudio,
     getAudioData,
     isReady,
     isPlaying,

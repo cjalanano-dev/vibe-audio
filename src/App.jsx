@@ -7,8 +7,8 @@ function App() {
   const {
     connectMicrophone,
     connectFile,
+    disconnectAudio,
     getAudioData,
-    isReady,
     isPlaying,
     togglePlay,
     volume,
@@ -30,6 +30,11 @@ function App() {
     }
   };
 
+  const handleStop = () => {
+    disconnectAudio();
+    setMode(null);
+  };
+
   const handleVolumeChange = (e) => {
     setVolume(parseFloat(e.target.value));
   };
@@ -39,52 +44,61 @@ function App() {
       <ThreeCanvas getAudioData={getAudioData} />
 
       <div className="ui-overlay">
-        <div className="header">
-          <h1>VIBE ANALYZER</h1>
-          <p>Audio Reactive Visualizer</p>
-        </div>
+        <header className="header">
+          <h1>VIBE</h1>
+          <p>Audio Visualizer</p>
+        </header>
 
-        <div className="controls-container">
-          {!mode && <div className="start-prompt">Choose Audio Source to Start</div>}
-
-          <div className="source-controls">
-            <button className={`btn ${mode === 'mic' ? 'active' : ''}`} onClick={handleMicClick}>
-              🎤 Mic
-            </button>
-
-            <div className="file-input-wrapper">
-              <button className={`btn ${mode === 'file' ? 'active' : ''}`}>
-                📁 local file
+        <main className="controls-center">
+          {!mode && (
+            <div className="start-menu">
+              <button className="primary-btn" onClick={handleMicClick}>
+                <span className="icon">🎤</span> Live Microphone
               </button>
-              <input type="file" accept="audio/*" onChange={handleFileChange} />
+
+              <div className="file-input-wrapper">
+                <button className="primary-btn">
+                  <span className="icon">📁</span> Upload Audio
+                </button>
+                <input type="file" accept="audio/*" onChange={handleFileChange} />
+              </div>
             </div>
-          </div>
+          )}
 
           {mode && (
-            <div className="playback-controls">
-              <button className="icon-btn" onClick={togglePlay}>
-                {isPlaying ? '⏸' : '▶'}
-              </button>
+            <div className="active-controls">
+              <div className="control-group">
+                <button className="circle-btn" onClick={togglePlay} title={isPlaying ? "Pause" : "Play"}>
+                  {isPlaying ? '⏸' : '▶'}
+                </button>
 
-              <div className="volume-control">
-                <span>🔊</span>
+                <button className="circle-btn stop-btn" onClick={handleStop} title="Stop & Exit">
+                  ⏹
+                </button>
+              </div>
+
+              <div className="volume-slider-container">
+                <span className="icon-small">�</span>
                 <input
                   type="range"
+                  className="volume-slider"
                   min="0"
                   max="1"
                   step="0.01"
                   value={volume}
                   onChange={handleVolumeChange}
                 />
+                <span className="icon-small">🔊</span>
               </div>
             </div>
           )}
-        </div>
+        </main>
 
-        <div className="footer">
-          {mode === 'mic' && <p>Listening...</p>}
-          {mode === 'file' && <p>{isPlaying ? 'Playing' : 'Paused'}</p>}
-        </div>
+        <footer className="footer">
+          {mode === 'mic' && <p>Listening to ambient audio</p>}
+          {mode === 'file' && <p>Playing local file</p>}
+          {!mode && <p>Select a source to begin</p>}
+        </footer>
       </div>
     </div>
   );
