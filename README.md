@@ -1,16 +1,53 @@
-# React + Vite
+# VIBE: Audio-Reactive Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+VIBE is an immersive, 3D audio-reactive web application that transforms sound into a mesmerizing visual experience. Built with React, Three.js, and the Web Audio API, it processes audio frequencies in real-time to drive dynamic geometries and lighting effects.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   **Real-time Audio Analysis**: Uses the Web Audio API (AnalyserNode) to break down audio into Bass, Mid, and Treble frequencies.
+*   **Dual Input Modes**:
+    *   **Microphone**: Visualize your voice or ambient music in the room.
+    *   **File Upload**: Play and visualize your local MP3/Audio files.
+*   **3D Visuals**:
+    *   **Bass**: A central sphere that pulses and shifts color with low-end frequencies.
+    *   **Mids**: A rotating torus ring that spins faster with the beat.
+    *   **Treble**: Floating elements that react to high-end frequencies.
+*   **Premium Aesthetics**:
+    *   Dark mode design.
+    *   Glassmorphism UI overlay.
+    *   Bloom post-processing effects (glow).
+    *   Custom SVG icons.
+*   **Playback Controls**:
+    *   Play/Pause toggle.
+    *   Volume slider.
+    *   Stop/Disconnect button to release audio resources.
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+*   **Vite**: Fast build tool and dev server.
+*   **React**: UI library.
+*   **Three.js (@react-three/fiber)**: 3D rendering engine.
+*   **@react-three/drei**: Useful helpers for Three.js.
+*   **@react-three/postprocessing**: For the Bloom effect.
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+
+2.  **Run the development server**:
+    ```bash
+    npm run dev
+    ```
+
+3.  **Open the app**:
+    Navigate to `http://localhost:5173` in your browser.
+
+## Usage
+
+1.  **Choose Source**: Click "Live Microphone" or "Upload Audio".
+2.  **Grant Permission**: If using the mic, allow the browser to access it.
+3.  **Enjoy**: Watch the visuals react to the sound.
+4.  **Control**: Use the floating controls island to pause, adjust volume, or stop the session.
