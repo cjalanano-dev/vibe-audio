@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import ThreeCanvas from './components/ThreeCanvas';
 import { useAudioAnalyzer } from './hooks/useAudioAnalyzer';
+import { useControls, Leva } from 'leva';
+import { PALETTES } from './constants/palettes';
 import {
   MicIcon,
   FolderIcon,
@@ -43,6 +45,30 @@ function App() {
   const [mode, setMode] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [trackTitle, setTrackTitle] = useState("Unknown Track");
+
+  // Palette System via Leva
+  const { themeName } = useControls({
+    themeName: {
+      value: 'Cyberpunk',
+      options: Object.keys(PALETTES),
+      label: 'Visual Theme'
+    }
+  });
+
+  const currentTheme = useMemo(() => PALETTES[themeName], [themeName]);
+
+  // Fullscreen Toggle
+  const handleDoubleClick = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
 
   // Drag & Drop Handlers
   useEffect(() => {
@@ -103,8 +129,9 @@ function App() {
   };
 
   return (
-    <div className={`app-container ${isDragging ? 'dragging' : ''}`}>
-      <ThreeCanvas getAudioData={getAudioData} />
+    <div className={`app-container ${isDragging ? 'dragging' : ''}`} onDoubleClick={handleDoubleClick}>
+      <Leva collapsed={true} /> {/* Optional: Auto-collapse controls */}
+      <ThreeCanvas getAudioData={getAudioData} theme={currentTheme} />
 
       <div className="ui-overlay">
         <header className="header">
